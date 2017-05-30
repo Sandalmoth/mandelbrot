@@ -11,7 +11,9 @@
 const double LOG2 = log(2);
 const double WMAX = 3.5;
 const double HMAX = 2.5;
-const double ZOOM = 0.9;
+const double ZOOM = 0.95;
+const double X0 = -0.75;
+const double Y0 = 0.0;
 
 class Man {
 public:
@@ -39,36 +41,41 @@ public:
   }
 
   void zoom_towards(double x, double y) {
+    // Zoom  such that the point x, y doesn't move on the screen
+    double wxp = wx - w/2.0 + w*x;
+    double wyp = wy - h/2.0 + h*y;
     w *= ZOOM;
     h *= ZOOM;
-    double mxx = wx - w/2.0 + w*x;
-    double myy = wy - h/2.0 + h*y;
-    wx = (wx + mxx) / 2.0;
-    wy = (wy + myy) / 2.0;
-    std::cout << w << ' ' << h << ' ' << wx << ' ' << wy << std::endl;
+    wx = wxp + w/2.0 - w*x;
+    wy = wyp + h/2.0 - h*y;
     window_bounds();
   }
 
   void zoom_away() {
     w /= ZOOM;
     h /= ZOOM;
-    if (w > WMAX) w = WMAX;
-    if (h > HMAX) h = HMAX;
     window_bounds();
   }
 
   void window_bounds() {
-    if (wx - w < -WMAX / 2.0) {
-      wx += -WMAX / 2.0 - (wx - w);
+    // Keep the window from being zoomed out or panned too far.
+    if (w > WMAX) w = WMAX;
+    if (h > HMAX) h = HMAX;
+    if (wx - w / 2.0 < X0 - WMAX / 2.0) {
+      wx = X0 - WMAX / 2.0 + w / 2.0;
+      std::cout << "oob left " << wx << ' ' << w << std::endl;
     }
-    if (wy - h < -HMAX / 2.0) {
-      wy += -HMAX / 2.0 - (wy - h);
+    if (wx + w / 2.0 > X0 + WMAX / 2.0) {
+      wx = X0 + WMAX / 2.0 - w / 2.0;
+      std::cout << "oob right " << wx << ' ' << w << std::endl;
     }
-    if (wx + w > WMAX / 2.0) {
-      wx += WMAX / 2.0 - (wx + w);
+    if (wy - h / 2.0 < Y0 - HMAX / 2.0) {
+      wy = Y0 - HMAX / 2.0 + h / 2.0;
+      std::cout << "oob top " << wy << ' ' << h << std::endl;
     }
-    if (wy + h > HMAX / 2.0) {
-      wy += HMAX / 2.0 - (wy + h);
+    if (wy + h / 2.0 > Y0 + HMAX / 2.0) {
+      wy = Y0 + HMAX / 2.0 - h / 2.0;
+      std::cout << "oob bot " << wy << ' ' << h << std::endl;
     }
   }
 

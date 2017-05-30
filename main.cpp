@@ -39,8 +39,8 @@ int main(int argc, char **argv) {
   Parameters p;
   try {
     TCLAP::CmdLine cmd("Mandelbrot drawer", ' ', VERSION);
-    TCLAP::ValueArg<int> a_window_width("", "window-width", "Width of window in pixels", false, 1536, "positive integer", cmd);
-    TCLAP::ValueArg<int> a_window_height("", "window-height", "Height of window in pixels", false, 1024, "positive integer", cmd);
+    TCLAP::ValueArg<int> a_window_width("", "window-width", "Width of window in pixels", false, 768, "positive integer", cmd);
+    TCLAP::ValueArg<int> a_window_height("", "window-height", "Height of window in pixels", false, 512, "positive integer", cmd);
     TCLAP::ValueArg<int> a_max_iters("", "max-iters", "Maximum iterations per pixel default", false, 1000, "positive integer", cmd);
 
     cmd.parse(argc, argv);
@@ -73,9 +73,9 @@ int main(int argc, char **argv) {
 
   // Generate palette
   vector<tuple<int, int, int>> palette;
-  palette.push_back(tuple<int, int, int>{0xFF, 0x0, 0x0});
-  palette.push_back(tuple<int, int, int>{0x0, 0xFF, 0x0});
-  palette.push_back(tuple<int, int, int>{0x0, 0x0, 0xFF});
+  palette.push_back(tuple<int, int, int>{0xAF, 0xF, 0xF});
+  palette.push_back(tuple<int, int, int>{0x0, 0xF, 0x40});
+  palette.push_back(tuple<int, int, int>{0xAE, 0x0, 0x78});
 
   // main loop
   SDL_Event event;
