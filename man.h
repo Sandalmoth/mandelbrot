@@ -63,20 +63,20 @@ public:
     if (h > HMAX) h = HMAX;
     if (wx - w / 2.0 < X0 - WMAX / 2.0) {
       wx = X0 - WMAX / 2.0 + w / 2.0;
-      std::cout << "oob left " << wx << ' ' << w << std::endl;
     }
     if (wx + w / 2.0 > X0 + WMAX / 2.0) {
       wx = X0 + WMAX / 2.0 - w / 2.0;
-      std::cout << "oob right " << wx << ' ' << w << std::endl;
     }
     if (wy - h / 2.0 < Y0 - HMAX / 2.0) {
       wy = Y0 - HMAX / 2.0 + h / 2.0;
-      std::cout << "oob top " << wy << ' ' << h << std::endl;
     }
     if (wy + h / 2.0 > Y0 + HMAX / 2.0) {
       wy = Y0 + HMAX / 2.0 - h / 2.0;
-      std::cout << "oob bot " << wy << ' ' << h << std::endl;
     }
+  }
+
+  void set_n_threads(int n) {
+    n_threads = n;
   }
 
   const std::vector<double> &get_data() const {
@@ -109,7 +109,7 @@ public:
     }
   }
 
-private:
+protected:
   std::vector<double> data;
   double wx = -0.75;
   double wy = 0.0;
@@ -119,6 +119,7 @@ private:
   int window_height = 1024;
   uint64_t max_iters = 1000;
   double radius = 1e100;
+  int n_threads = 1;
 };
 
 

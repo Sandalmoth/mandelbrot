@@ -7,12 +7,13 @@
 #include <tuple>
 
 #include "man.h"
+#include "man-thrd.h"
 
 
 using namespace std;
 
 
-const string VERSION = "0.1";
+const string VERSION = "0.2";
 
 
 struct Parameters {
@@ -54,7 +55,9 @@ int main(int argc, char **argv) {
 
   unique_ptr<Man> mandel;
   // TODO add selection code
-  mandel = make_unique<Man>();
+  // mandel = make_unique<Man>();
+  mandel = make_unique<ManThrd>();
+  mandel->set_n_threads(5);
 
   mandel->set_dims(p.window_width, p.window_height);
   mandel->set_max_iters(p.max_iters);

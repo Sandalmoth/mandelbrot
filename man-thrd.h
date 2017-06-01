@@ -9,10 +9,15 @@
 
 class ManThrd : public Man {
 public:
-  ManThrd(int ww, int wh)
-    : Man(ww, wh) { }
+  void update() override;
 
 private:
+  double mandelpoint(int px, int py);
+  void _run_segment(int x_pos, int y_pos, int width, int height);
+  std::thread run_segment(int x_pos, int y_pos, int width, int height) {
+    return std::thread([=]{ _run_segment(x_pos, y_pos, width, height); });
+  }
+
 };
 
 
