@@ -20,6 +20,9 @@ struct Parameters {
   int window_width;
   int window_height;
   uint64_t max_iters;
+  int n_threads;
+  string renderer;
+  string palette;
 };
 
 
@@ -40,15 +43,31 @@ int main(int argc, char **argv) {
   Parameters p;
   try {
     TCLAP::CmdLine cmd("Mandelbrot drawer", ' ', VERSION);
-    TCLAP::ValueArg<int> a_window_width("", "window-width", "Width of window in pixels", false, 768, "positive integer", cmd);
-    TCLAP::ValueArg<int> a_window_height("", "window-height", "Height of window in pixels", false, 512, "positive integer", cmd);
+    TCLAP::ValueArg<int> a_window_width("", "window-width", "Width of window in pixels", false, 1536, "positive integer", cmd);
+    TCLAP::ValueArg<int> a_window_height("", "window-height", "Height of window in pixels", false, 1024, "positive integer", cmd);
     TCLAP::ValueArg<int> a_max_iters("", "max-iters", "Maximum iterations per pixel default", false, 1000, "positive integer", cmd);
+    TCLAP::ValueArg<int> a_n_threads("n", "n-threads", "Maximum number of threads to use in thread mode", false, 4, "positive integer", cmd);
+
+    vector<string> allowed_rendermodes;
+		allowed_rendermodes.push_back("single");
+		allowed_rendermodes.push_back("thread");
+		allowed_rendermodes.push_back("sycl");
+    TCLAP::ValuesConstraint<string> allowedVals(allowed_rendermodes);
+    TCLAP::ValueArg<string> a_renderer("r", "renderer", "Renderer to use", false, "thread", &allowedVals, cmd);
+
+    vector<string> allowed_palettes;
+		allowed_rendermodes.push_back("rainbow");
+    TCLAP::ValuesConstraint<string> allowedVals2(allowed_palettes);
+    TCLAP::ValueArg<string> a_palette("p", "palette", "Palette to use", false, "rainbow", &allowedVals2, cmd);
 
     cmd.parse(argc, argv);
 
     p.window_width = a_window_width.getValue();
     p.window_height = a_window_height.getValue();
     p.max_iters = a_max_iters.getValue();
+    p.n_threads = a_n_threads.getValue();
+    p.renderer = a_renderer.getValue();
+    p.palette = a_palette.getValue();
   } catch (TCLAP::ArgException &e) {
     cerr << "TCLAP Error: " << e.error() << endl << "\targ: " << e.argId() << endl;
   }
@@ -56,9 +75,13 @@ int main(int argc, char **argv) {
   unique_ptr<Man> mandel;
   // TODO add selection code
   // mandel = make_unique<Man>();
-  mandel = make_unique<ManThrd>();
-  mandel->set_n_threads(5);
+  if (p.renderer == "single") {
+    mandel = make_unique<Man>();
+  } else if (p.renderer == "thread") {
+    mandel = make_unique<ManThrd>();
+  }
 
+  mandel->set_n_threads(p.n_threads);
   mandel->set_dims(p.window_width, p.window_height);
   mandel->set_max_iters(p.max_iters);
 
@@ -76,9 +99,20 @@ int main(int argc, char **argv) {
 
   // Generate palette
   vector<tuple<int, int, int>> palette;
-  palette.push_back(tuple<int, int, int>{0xAF, 0xF, 0xF});
-  palette.push_back(tuple<int, int, int>{0x0, 0xF, 0x40});
-  palette.push_back(tuple<int, int, int>{0xAE, 0x0, 0x78});
+  if (p.palette == "rainbow") {
+    palette.push_back(tuple<int, int, int>{0xFF, 0x10, 0x10});
+    palette.push_back(tuple<int, int, int>{0xFF, 0x88, 0x10});
+    palette.push_back(tuple<int, int, int>{0xFF, 0xFF, 0x10});
+    palette.push_back(tuple<int, int, int>{0x88, 0xFF, 0x10});
+    palette.push_back(tuple<int, int, int>{0x10, 0xFF, 0x10});
+    palette.push_back(tuple<int, int, int>{0x10, 0xFF, 0x88});
+    palette.push_back(tuple<int, int, int>{0x10, 0xFF, 0xFF});
+    palette.push_back(tuple<int, int, int>{0x10, 0x88, 0xFF});
+    palette.push_back(tuple<int, int, int>{0x10, 0x10, 0xFF});
+    palette.push_back(tuple<int, int, int>{0x88, 0x10, 0xFF});
+    palette.push_back(tuple<int, int, int>{0xFF, 0x10, 0xFF});
+    palette.push_back(tuple<int, int, int>{0xFF, 0x10, 0x88});
+  }
 
   // main loop
   SDL_Event event;
