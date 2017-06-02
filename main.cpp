@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
     TCLAP::CmdLine cmd("Mandelbrot drawer", ' ', VERSION);
     TCLAP::ValueArg<int> a_window_width("", "window-width", "Width of window in pixels", false, 1536, "positive integer", cmd);
     TCLAP::ValueArg<int> a_window_height("", "window-height", "Height of window in pixels", false, 1024, "positive integer", cmd);
-    TCLAP::ValueArg<int> a_max_iters("", "max-iters", "Maximum iterations per pixel default", false, 1000, "positive integer", cmd);
+    TCLAP::ValueArg<int> a_max_iters("x", "max-iters", "Maximum iterations per pixel default", false, 1000, "positive integer", cmd);
     TCLAP::ValueArg<int> a_n_threads("n", "n-threads", "Maximum number of threads to use in thread mode", false, 4, "positive integer", cmd);
 
     vector<string> allowed_rendermodes;
