@@ -1,4 +1,4 @@
-#include "man-thrd.h"
+#include "man-sycl.h"
 
 
 #include <list>
@@ -7,7 +7,7 @@
 using namespace std;
 
 
-void ManThrd::update() {
+void ManSYCL::update() {
   data = vector<double>(window_width*window_height, 0);
   int tuse = n_threads;
   if (tuse > window_width) tuse = window_width;
@@ -25,7 +25,7 @@ void ManThrd::update() {
 }
 
 
-double ManThrd::mandelpoint(int px, int py) {
+double ManSYCL::mandelpoint(int px, int py) {
   double x0 = wx - w/2.0 + px*w/static_cast<double>(window_width);
   double y0 = wy - h/2.0 + py*h/static_cast<double>(window_height);
   double x = 0.0;
@@ -47,7 +47,7 @@ double ManThrd::mandelpoint(int px, int py) {
 }
 
 
-void ManThrd::_run_segment(int x_pos, int y_pos, int width, int height) {
+void ManSYCL::_run_segment(int x_pos, int y_pos, int width, int height) {
   for (int px = x_pos; px < x_pos + width; ++px) {
     for (int py = y_pos; py < y_pos + height; ++py) {
       data[py * window_width + px] = mandelpoint(px, py);

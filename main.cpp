@@ -8,6 +8,7 @@
 
 #include "man.h"
 #include "man-thrd.h"
+#include "man-sycl.h"
 
 
 using namespace std;
@@ -79,6 +80,8 @@ int main(int argc, char **argv) {
     mandel = make_unique<Man>();
   } else if (p.renderer == "thread") {
     mandel = make_unique<ManThrd>();
+  } else if (p.renderer == "sycl") {
+    mandel = make_unique<ManSYCL>();
   }
 
   mandel->set_n_threads(p.n_threads);
