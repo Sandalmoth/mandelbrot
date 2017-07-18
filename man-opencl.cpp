@@ -27,9 +27,16 @@ ManOpenCL::ManOpenCL() {
     device = devices[0];
 
     // make kernel
-    std::ifstream source_file("mpt.cl");
-    std::string source_code(  std::istreambuf_iterator<char>(source_file)
-                            , (std::istreambuf_iterator<char>()));
+    std::ifstream source_file("../mpt.cl");
+    std::string source_code;
+    std::string line;
+    int ln = 0;
+    while (std::getline(source_file, line)) {
+      std::cout << ln++ << "\t: " << line << std::endl;
+      source_code += line + '\n';
+    }
+    // std::string source_code(  std::istreambuf_iterator<char>(source_file)
+    //                         , (std::istreambuf_iterator<char>()));
     cl::Program::Sources source(1, std::make_pair(source_code.c_str(), source_code.length()+1));
 
     program = cl::Program(context, source);
@@ -44,7 +51,15 @@ ManOpenCL::ManOpenCL() {
     }
 
     // Make kernel
-  kernel = cl::Kernel(program, "mandelpoint");
+    try {
+      kernel = cl::Kernel(program, "mpt");
+    } catch (cl::Error e) {
+      std::cout << "OpenCL kernel construction error\n  " << e.what() << "(" << e.err() << ")" << std::endl;
+      // cl_int kernelErr = CL_SUCCESS;
+      // auto kernelInfo = kernel.getInfo<CL_KERNEL_FUNCTION_NAME>(&kernelErr);
+      // std::cerr << kernelInfo << std::endl << std::endl;
+      // exit(1);
+    }
 
   } catch (cl::Error e) {
     std::cout << "OpenCL error\n  " << e.what() << "(" << e.err() << ")" << std::endl;
@@ -56,3 +71,4 @@ ManOpenCL::ManOpenCL() {
 
 void ManOpenCL::update() {
 }
+

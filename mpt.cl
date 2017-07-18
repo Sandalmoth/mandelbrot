@@ -1,7 +1,9 @@
-/* #define LOG2 0.693148 */
+#define LOG2 0.693148
 
-__kernel void mpt() {
-}
+__kernel void mpt(__global const float *k, __global float *out) {
+  int i = get_global_id(0);
+  out[i] = k[i];
+};
 
 /* __kernel void mpt( */
 /*                     const __global int *pw */
