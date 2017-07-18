@@ -9,6 +9,7 @@
 #include "man.h"
 #include "man-thrd.h"
 #include "man-sycl.h"
+#include "man-opencl.h"
 
 
 using namespace std;
@@ -53,6 +54,7 @@ int main(int argc, char **argv) {
 		allowed_rendermodes.push_back("single");
 		allowed_rendermodes.push_back("thread");
 		allowed_rendermodes.push_back("sycl");
+		allowed_rendermodes.push_back("opencl");
     TCLAP::ValuesConstraint<string> allowedVals(allowed_rendermodes);
     TCLAP::ValueArg<string> a_renderer("r", "renderer", "Renderer to use", false, "thread", &allowedVals, cmd);
 
@@ -82,7 +84,10 @@ int main(int argc, char **argv) {
     mandel = make_unique<ManThrd>();
   } else if (p.renderer == "sycl") {
     mandel = make_unique<ManSYCL>();
+  } else if (p.renderer == "opencl") {
+    mandel = make_unique<ManOpenCL>();
   }
+
 
   mandel->set_n_threads(p.n_threads);
   mandel->set_dims(p.window_width, p.window_height);
